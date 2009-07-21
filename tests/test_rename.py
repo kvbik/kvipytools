@@ -17,6 +17,8 @@ class TestParse(TestCase):
 
 class TestWithTmpDirCase(TestCase):
     def setUp(self):
+        self.options = (('x', 'y'), ('a a a', 'b b b'))
+
         self.oldcwd = os.getcwd()
         self.directory = mkdtemp(prefix='test_util_parse_')
         os.chdir(self.directory)
@@ -32,7 +34,7 @@ class TestWithTmpDirCase(TestCase):
 
 class TestRenameFiles(TestWithTmpDirCase):
     def test_correct_filenames(self):
-        rename_files_dirs()
+        rename_files_dirs(self.options)
 
         listdir = [ i for i in os.walk('.') ]
         expected = [('.', ['y'], []), ('./y', [], ['b b b'])]
@@ -44,7 +46,7 @@ class TestChangeContent(TestWithTmpDirCase):
         return f.read()
 
     def test_content_renamed(self):
-        change_content()
+        change_content(self.options)
 
         d = {}
         for base, dirs, files in os.walk('.'):
