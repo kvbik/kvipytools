@@ -17,7 +17,14 @@ def rename_files_dirs(options):
     create dirs first
     than move files
     """
-    pass
+    os.system('''find . -type d | while read f; do mkdir -p "$(echo $f | sed 's/a a a/b b b/g')"; done''')
+    os.system('''find . -type d | while read f; do mkdir -p "$(echo $f | sed 's/x/y/g')"; done''')
+
+    os.system('''find . -type f | while read f; do mv "$f" "$(echo $f | sed 's/a a a/b b b/g')"; done''')
+    os.system('''find . -type f | while read f; do mv "$f" "$(echo $f | sed 's/x/y/g')"; done''')
+
+    os.system('''find -depth -type d -empty -exec rmdir {} \;''')
+
 
 def change_content_onefile(path, pattern, replacement):
     """
@@ -29,7 +36,8 @@ def change_content(options):
     """
     take file by file and replace any occurence of pattern by its replacement
     """
-    pass
+    os.system('''grep 'a a a' . -r -l | tr '\\n' '\\0' | xargs -0 sed -i "s/a a a/b b b/g"''')
+    os.system('''grep 'x' . -r -l | tr '\\n' '\\0' | xargs -0 sed -i "s/x/y/g"''')
 
 if __name__ == '__main__':
     options = parse_options(sys.argv[1:])
