@@ -16,6 +16,14 @@ class TestParse(TestCase):
         self.failUnlessEqual(tuple(parsed), expected)
 
 class TestWithTmpDirCase(TestCase):
+    TEST_DIR_STRUCTURE = (
+        (join('.'), None),
+        (join('.', 'x'), None),
+        (join('.', 'x', 'a a a'), 'x\na a a'),
+        (join('.', 'a a a'), None),
+        (join('.', 'a a a', 'x'), 'a a a\nx'),
+    )
+
     def setUp(self):
         self.options = (('x', 'y'), ('a a a', 'b b b'))
 
@@ -23,11 +31,38 @@ class TestWithTmpDirCase(TestCase):
         self.directory = mkdtemp(prefix='test_util_parse_')
         os.chdir(self.directory)
 
-        for dir, fil in (('x', 'a a a'), ('a a a', 'x')):
-            os.mkdir(dir)
-            f = open(join(dir, fil), 'w')
-            f.write('\n'.join([dir, fil]))
-            f.close()
+        self.create_structure_from_variable(self.TEST_DIR_STRUCTURE)
+
+    def create_structure_from_variable(self, dir_structure):
+        '''
+        create directory structure via given list of tuples (filename, content,)
+        content being None means it is directory
+        '''
+        for filename, content in dir_structure:
+            if content is None:
+                try:
+                    os.makedirs(filename)
+                except OSError:
+                    pass
+            else:
+                f = open(filename, 'w')
+                f.write(content)
+                f.close()
+
+    def store_directory_structure(self, path):
+        '''
+        recursivelly traverse directory and store it in format
+        that can be given to create_structure_from_variable()
+        '''
+        d = {}
+        for base, dirs, files in os.walk(path):
+            d[base] = None
+            for i in files:
+                fn = join(base, i)
+                f = open(fn, 'r')
+                d[fn] = f.read()
+                f.close()
+        return d.items()
 
     def tearDown(self):
         os.chdir(self.oldcwd)
@@ -37,25 +72,29 @@ class TestRenameFiles(TestWithTmpDirCase):
     def test_correct_filenames(self):
         rename_files_dirs(self.options)
 
-        listdir = sorted([ i for i in os.walk('.') ])
-        expected = sorted([('.', ['b b b', 'y'], []), ('./b b b', [], ['y']), ('./y', [], ['b b b'])])
-        self.failUnlessEqual(listdir, expected)
+        actual_structure = sorted(self.store_directory_structure('.'))
+        expected_structure = sorted((
+            (join('.'), None),
+            (join('.', 'y'), None),
+            (join('.', 'y', 'b b b'), 'x\na a a'),
+            (join('.', 'b b b'), None),
+            (join('.', 'b b b', 'y'), 'a a a\nx'),
+        ))
+
+        self.failUnlessEqual(expected_structure, actual_structure)
 
 class TestChangeContent(TestWithTmpDirCase):
-    def readfile(self, filename):
-        f = open(filename, 'r')
-        return f.read()
-
     def test_content_renamed(self):
         change_content(self.options)
 
-        d = {}
-        for base, dirs, files in os.walk('.'):
-            for i in files:
-                f = join(base, i)
-                d[f] = self.readfile(f)
+        actual_structure = sorted(self.store_directory_structure('.'))
+        expected_structure = sorted((
+            (join('.'), None),
+            (join('.', 'x'), None),
+            (join('.', 'x', 'a a a'), 'y\nb b b'),
+            (join('.', 'a a a'), None),
+            (join('.', 'a a a', 'x'), 'b b b\ny'),
+        ))
 
-        expected = [('./a a a/x', 'b b b\ny'), ('./x/a a a', 'y\nb b b')]
-
-        self.failUnlessEqual(sorted(d.items()), expected)
+        self.failUnlessEqual(expected_structure, actual_structure)
 
