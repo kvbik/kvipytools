@@ -8,12 +8,14 @@ def parse_options(opts):
     >>> tuple(parse_options(['a=b', 'x x x=y y y']))
     (('a', 'b'), ('x x x', 'y y y'))
     """
-    return ( tuple(i.split('=')) for i in opts )
+    return [ tuple(i.split('=')) for i in opts ]
 
 def call_command(cmd, options):
     for patrn, repl in options:
         repl = {'patrn': patrn, 'repl': repl,}
-        os.system(cmd % repl)
+        command = cmd % repl
+        print 'running: %s' % command
+        os.system(command)
 
 def rename_files_dirs(options):
     """
