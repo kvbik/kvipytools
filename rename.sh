@@ -1,11 +1,11 @@
 #!/bin/bash
 
-C=$( cd $0; pwd )
+C=$( cd $( dirname $0 ); pwd )
 
 D=$( mktemp -d )
 mv .git ${D}
 
-${C}/bin/rename.py "$@"
+${C}/rename.py "$@"
 
 mv ${D}/.git .
 rmdir ${D}
