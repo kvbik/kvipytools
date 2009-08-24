@@ -11,6 +11,9 @@ def parse_options(opts):
     return [ tuple(i.split('=')) for i in opts ]
 
 def call_command(cmd, options):
+    """
+    helper function that call shell command for every tuple in options
+    """
     for patrn, repl in options:
         repl = {'patrn': patrn, 'repl': repl,}
         command = cmd % repl
@@ -20,21 +23,13 @@ def call_command(cmd, options):
 def rename_files_dirs(options):
     """
     rename all dirs and files to new name defined via options
-
-    create dirs first
-    than move files
     """
+    # create dirs first
     call_command('''find . -type d | while read f; do mkdir -p "$(echo $f | sed 's/%(patrn)s/%(repl)s/g')"; done''', options)
+    # than move files
     call_command('''find . -type f | while read f; do mv "$f"  "$(echo $f | sed 's/%(patrn)s/%(repl)s/g')"; done''', options)
-
     # delete empty dirs
-    call_command('''find -depth -type d -empty -exec rmdir {} \;''', [(True, True)])
-
-def change_content_onefile(path, pattern, replacement):
-    """
-    replace any occurence of pattern in single file
-    """
-    pass
+    call_command('''find -depth -type d -empty -exec rmdir {} \;''', [(1,1)])
 
 def change_content(options):
     """

@@ -11,9 +11,8 @@ from rename import parse_options, rename_files_dirs, change_content
 class TestParse(TestCase):
     def test_option_parser(self):
         parsed = parse_options(['x=y', 'a a a=b b b'])
-        expected = (('x', 'y'), ('a a a', 'b b b'))
-
-        self.failUnlessEqual(tuple(parsed), expected)
+        expected = [('x', 'y'), ('a a a', 'b b b')]
+        self.failUnlessEqual(expected, parsed)
 
 class TestWithTmpDirCase(TestCase):
     TEST_DIR_STRUCTURE = (
