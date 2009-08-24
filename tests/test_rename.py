@@ -14,6 +14,16 @@ class TestParse(TestCase):
         expected = [('x', 'y'), ('a a a', 'b b b')]
         self.failUnlessEqual(expected, parsed)
 
+    def test_options_with_equalsign_in_patterns(self):
+        parsed = parse_options([r'x\=x\==y\=y\=', r'a a a\==\=b b b'])
+        expected = [('x=x=', 'y=y='), ('a a a=', '=b b b')]
+        self.failUnlessEqual(expected, parsed)
+
+    def test_escaping_of_escape_char(self):
+        parsed = parse_options([r'x\\=\\y'])
+        expected = [(r'x\\', r'\\y')]
+        self.failUnlessEqual(expected, parsed)
+
 class TestWithTmpDirCase(TestCase):
     TEST_DIR_STRUCTURE = (
         (join('.'), None),
