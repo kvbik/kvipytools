@@ -3,6 +3,15 @@
 import sys, os
 
 class OptionParser(object):
+    '''
+    parser commandline optiones separated by given separator::
+
+      ./rename.py a=b c=d "a a a=b b b" a\\==\\=b
+
+    will result into something like this::
+
+      opts = [ ('a', 'b'), ('c', 'd'), ('a a a', 'b b b'), ('a=', '=b') ]
+    '''
     def __init__(self, escape_char='\\', escape_replacement=-1, splitter_char='=', splitter_replacement=-2):
         self.escape_char = escape_char
         self.escape_replacement = escape_replacement
@@ -18,16 +27,20 @@ class OptionParser(object):
         put some special mark instead
         '''
         escaped_chars = []
-        for p in zip(chars[::2], chars[1::2]):
-            if p == pair:
-                escaped_chars.append(replacement)
+        hop = False
+        for i, j in enumerate(chars):
+            if hop:
+                hop = False
+                continue
+            if i < (len(chars) - 1):
+                if (j, chars[i+1]) == pair:
+                    hop = True
+                    x = replacement
+                else:
+                    x = j
             else:
-                escaped_chars.extend(p)
-
-        # handle odd length of chars list
-        if len(chars) % 2:
-            escaped_chars.append(chars[-1])
-
+                x = j
+            escaped_chars.append(x)
         return escaped_chars
 
     def escape_escape(self, chars):
@@ -42,8 +55,10 @@ class OptionParser(object):
         index = chars.index(splitter)
         return (chars[:index], chars[index+1:])
 
-    def join_tuple(self, twins):
-        return tuple(map(lambda x: ''.join(x), twins))
+    def list_replace_all(self, seq, obj, repl):
+        for i, elem in enumerate(seq):
+            if elem == obj:
+                seq[i] = repl
 
     def __call__(self, opts):
         """
@@ -55,8 +70,11 @@ class OptionParser(object):
         for o in opts:
             o = self.escape_escape(o)
             o = self.escape_split(o)
-            t = self.split_via_equalsign(o)
-            parsed_opts.append(self.join_tuple(t))
+            l, r = self.split_via_equalsign(o)
+            for i in l, r:
+                self.list_replace_all(i, self.splitter_replacement, self.splitter_char)
+                self.list_replace_all(i, self.escape_replacement, self.escape_char)
+            parsed_opts.append((''.join(l), ''.join(r)))
         return parsed_opts
 
 def call_command(cmd, options):

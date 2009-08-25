@@ -24,7 +24,7 @@ class TestParse(TestCase):
 
     def test_escaping_of_escape_char(self):
         parsed = self.option_parser([r'x\\=\\y'])
-        expected = [(r'x\\', r'\\y')]
+        expected = [('x\\', '\\y')]
         self.failUnlessEqual(expected, parsed)
 
     def test_split_string(self):
@@ -42,17 +42,24 @@ class TestParse(TestCase):
         expected = [-1, -1, '\\']
         self.failUnlessEqual(expected, escaped)
 
+    def test_replace_escaping_if_escape_char_is_on_odd_places(self):
+        escaped = self.option_parser.escape_escape(['a', '\\', '\\', 'b'])
+        expected = ['a', -1, 'b']
+        self.failUnlessEqual(expected, escaped)
+
     def test_split_list_via_equal_sign(self):
         values = [1, 2, 3, '=', 4, 5, 6]
         split = self.option_parser.split_via_equalsign(values)
         expected = ([1, 2, 3], [4, 5, 6])
         self.failUnlessEqual(expected, split)
 
-    def test_join_tuple(self):
-        values = (['1', '2', '3'], ['4', '5', '6'])
-        join = self.option_parser.join_tuple(values)
-        expected = ('123', '456')
-        self.failUnlessEqual(expected, join)
+    def test_list_replace_all(self):
+        values = [1, 2, 3, 1, 2, 3]
+        self.option_parser.list_replace_all(values, 1, 'one')
+        self.option_parser.list_replace_all(values, 2, 'two')
+        self.option_parser.list_replace_all(values, 3, 'three')
+        expected = ['one', 'two', 'three', 'one', 'two', 'three']
+        self.failUnlessEqual(expected, values)
 
 
 class TestWithTmpDirCase(TestCase):
