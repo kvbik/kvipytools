@@ -3,20 +3,40 @@
 import sys, os
 
 class OptionParser(object):
+    def __init__(self, escape_char='\\', escape_replacement=-1, splitter_char='=', splitter_replacement=-2):
+        self.escape_char = escape_char
+        self.escape_replacement = escape_replacement
+        self.splitter_char = splitter_char
+        self.splitter_replacement = splitter_replacement
+
     def split_string(self, string):
         return [ c for c in string ]
 
-    def escape_escape(self, chars, escape='\\'):
-        # TODO
-        if chars == [escape, escape, escape, escape, escape]:
-            return [-1, -1, escape]
-        return chars
+    def replace_pair(self, chars, pair, replacement):
+        '''
+        go through chars in pairs and if two chars equals given pair
+        put some special mark instead
+        '''
+        escaped_chars = []
+        for p in zip(chars[::2], chars[1::2]):
+            if p == pair:
+                escaped_chars.append(replacement)
+            else:
+                escaped_chars.extend(p)
 
-    def escape_split(self, chars, escape='\\', splitter='='):
-        # TODO
-        if chars == [escape, splitter, escape, splitter, splitter]:
-            return [-2, -2, splitter]
-        return chars
+        # handle odd length of chars list
+        if len(chars) % 2:
+            escaped_chars.append(chars[-1])
+
+        return escaped_chars
+
+    def escape_escape(self, chars):
+        pair = (self.escape_char, self.escape_char)
+        return self.replace_pair(chars, pair, self.escape_replacement)
+
+    def escape_split(self, chars):
+        pair = (self.escape_char, self.splitter_char)
+        return self.replace_pair(chars, pair, self.splitter_replacement)
 
     def split_via_equalsign(self, chars, splitter='='):
         index = chars.index(splitter)
