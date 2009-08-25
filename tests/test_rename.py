@@ -5,14 +5,45 @@ from shutil import rmtree
 from unittest import TestCase
 from tempfile import mkdtemp
 
-from rename import parse_options, rename_files_dirs, change_content
+from rename import OptionParser, rename_files_dirs, change_content
 
 
 class TestParse(TestCase):
+    def setUp(self):
+        self.option_parser = OptionParser()
+
     def test_option_parser(self):
-        parsed = parse_options(['x=y', 'a a a=b b b'])
+        parsed = self.option_parser(['x=y', 'a a a=b b b'])
         expected = [('x', 'y'), ('a a a', 'b b b')]
         self.failUnlessEqual(expected, parsed)
+
+    def test_split_string(self):
+        split = self.option_parser.split_string('x=y')
+        expected = ['x', '=', 'y']
+        self.failUnlessEqual(expected, split)
+
+    def test_replace_escaping_split_char(self):
+        escaped = self.option_parser.escape_split(['\\', '=', '\\', '=', '='])
+        expected = [-2, -2, '=']
+        self.failUnlessEqual(expected, escaped)
+
+    def test_replace_escaping_of_escape_char(self):
+        escaped = self.option_parser.escape_escape(['\\', '\\', '\\', '\\', '\\'])
+        expected = [-1, -1, '\\']
+        self.failUnlessEqual(expected, escaped)
+
+    def test_split_list_via_equal_sign(self):
+        values = [1, 2, 3, '=', 4, 5, 6]
+        split = self.option_parser.split_via_equalsign(values)
+        expected = ([1, 2, 3], [4, 5, 6])
+        self.failUnlessEqual(expected, split)
+
+    def test_join_tuple(self):
+        values = (['1', '2', '3'], ['4', '5', '6'])
+        join = self.option_parser.join_tuple(values)
+        expected = ('123', '456')
+        self.failUnlessEqual(expected, join)
+
 
 class TestWithTmpDirCase(TestCase):
     TEST_DIR_STRUCTURE = (

@@ -2,13 +2,42 @@
 
 import sys, os
 
-def parse_options(opts):
-    """
-    parse options given on cmdline separated by equal sign:
-    >>> tuple(parse_options(['a=b', 'x x x=y y y']))
-    (('a', 'b'), ('x x x', 'y y y'))
-    """
-    return [ tuple(i.split('=')) for i in opts ]
+class OptionParser(object):
+    def split_string(self, string):
+        return [ c for c in string ]
+
+    def escape_escape(self, chars, escape='\\'):
+        # TODO
+        if chars == [escape, escape, escape, escape, escape]:
+            return [-1, -1, escape]
+        return chars
+
+    def escape_split(self, chars, escape='\\', splitter='='):
+        # TODO
+        if chars == [escape, splitter, escape, splitter, splitter]:
+            return [-2, -2, splitter]
+        return chars
+
+    def split_via_equalsign(self, chars, splitter='='):
+        index = chars.index(splitter)
+        return (chars[:index], chars[index+1:])
+
+    def join_tuple(self, twins):
+        return tuple(map(lambda x: ''.join(x), twins))
+
+    def __call__(self, opts):
+        """
+        parse options given on cmdline separated by equal sign:
+        >>> OptionParser()(['a=b', 'x x x=y y y'])
+        [('a', 'b'), ('x x x', 'y y y')]
+        """
+        parsed_opts = []
+        for o in opts:
+            o = self.escape_escape(o)
+            o = self.escape_split(o)
+            t = self.split_via_equalsign(o)
+            parsed_opts.append(self.join_tuple(t))
+        return parsed_opts
 
 def call_command(cmd, options):
     """
@@ -39,6 +68,7 @@ def change_content(options):
 
 
 if __name__ == '__main__':
+    parse_options = OptionParser()
     options = parse_options(sys.argv[1:])
     rename_files_dirs(options)
     change_content(options)
