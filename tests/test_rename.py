@@ -17,6 +17,16 @@ class TestParse(TestCase):
         expected = [('x', 'y'), ('a a a', 'b b b')]
         self.failUnlessEqual(expected, parsed)
 
+    def test_options_with_equalsign_in_patterns(self):
+        parsed = self.option_parser([r'x\=x\==y\=y\=', r'a a a\==\=b b b'])
+        expected = [('x=x=', 'y=y='), ('a a a=', '=b b b')]
+        self.failUnlessEqual(expected, parsed)
+
+    def test_escaping_of_escape_char(self):
+        parsed = self.option_parser([r'x\\=\\y'])
+        expected = [(r'x\\', r'\\y')]
+        self.failUnlessEqual(expected, parsed)
+
     def test_split_string(self):
         split = self.option_parser.split_string('x=y')
         expected = ['x', '=', 'y']
@@ -98,6 +108,7 @@ class TestWithTmpDirCase(TestCase):
         os.chdir(self.oldcwd)
         rmtree(self.directory)
 
+
 class TestRenameFiles(TestWithTmpDirCase):
     def test_correct_filenames(self):
         rename_files_dirs(self.options)
@@ -112,6 +123,7 @@ class TestRenameFiles(TestWithTmpDirCase):
         ))
 
         self.failUnlessEqual(expected_structure, actual_structure)
+
 
 class TestChangeContent(TestWithTmpDirCase):
     def test_content_renamed(self):
