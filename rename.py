@@ -77,7 +77,7 @@ class OptionParser(object):
             parsed_opts.append((''.join(l), ''.join(r)))
         return parsed_opts
 
-def call_command(cmd, options):
+def call_command(cmd, options, verbose=False):
     """
     helper function that call shell command for every tuple in options
     """
@@ -85,6 +85,8 @@ def call_command(cmd, options):
         repl = {'patrn': patrn, 'repl': repl,}
         command = cmd % repl
         print 'running: %s' % command
+        if not verbose:
+            command += '&>/dev/null'
         os.system(command)
 
 def rename_files_dirs(options):

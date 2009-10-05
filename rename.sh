@@ -17,7 +17,7 @@ rmdir ${D}
 
 # remove deleted files and add new ones
 git ls-files -z --deleted | git update-index -z --remove --stdin
-git add -A
+git add .
 
 # write nice commit message
 git commit -F - <<EOF
