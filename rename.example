@@ -1,3 +1,3 @@
 
-~/bin/python-scripts/rename.sh djangobaselibrary=dynamicsite django-base-library=django-dynamicsite "Django Base Library=Django Dynamic Site"
+~/bin/python-scripts/rename.sh djangobaselibrary=yournewsupercoollibrary django-base-library=your-new-super-cool-library "Django Base Library=You New Super Cool Library"
 
