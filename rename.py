@@ -104,7 +104,7 @@ def change_content(options):
     """
     take file by file and replace any occurence of pattern by its replacement
     """
-    call_command('''grep '%(patrn)s' . -r -l | tr '\\n' '\\0' | xargs -0 sed -i "s/%(patrn)s/%(repl)s/g"''', options)
+    call_command('''grep -r -l -- '%(patrn)s' . | tr '\\n' '\\0' | xargs -0 sed -i "s/%(patrn)s/%(repl)s/g"''', options)
 
 
 if __name__ == '__main__':
