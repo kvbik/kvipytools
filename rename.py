@@ -102,7 +102,7 @@ def rename_files_dirs(options):
 
 def change_content(options):
     """
-    take file by file and replace any occurence of pattern by its replacement
+    take file by file and replace any occurence of pattern with its replacement
     """
     call_command('''grep -r -l -- '%(patrn)s' . | tr '\\n' '\\0' | xargs -0 sed -i "s/%(patrn)s/%(repl)s/g"''', options)
 

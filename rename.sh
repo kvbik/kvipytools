@@ -1,5 +1,7 @@
 #!/bin/bash
 
+# shell wrapper for rename.py which excludes .git subdir
+
 # currdir
 C=$( cd $( dirname $0 ); pwd )
 # tmpdir
