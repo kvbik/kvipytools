@@ -28,11 +28,11 @@ class TestRun(TestCase):
         # save os.system because of mocking
         self.os_system = os.system
 
-        # create test dir structure
-        self.directory = mkdtemp(prefix='test_run_testrun_')
-
         # store curr path
         self.oldcwd = os.getcwd()
+
+        # create test dir structure
+        self.directory = mkdtemp(prefix='test_run_testrun_')
 
         # make some subdirs
         os.chdir(self.directory)
@@ -40,25 +40,18 @@ class TestRun(TestCase):
             os.makedirs(d)
 
         # create runcommand file
-        self.runfile = path.join(self.directory, 'runcommand2.py')
+        self.runfile = path.join(self.directory, 'runcommand.py')
         f = open(self.runfile, 'w')
         f.write(RUNCOMMAND)
         f.close()
 
-    def fail_unless_equal_main_with_this_argv(self, argv, expected, base=None):
-        oldcwd = os.getcwd()
-        if base is not None:
-            os.chdir(base)
-
+    def fail_unless_equal_main_with_this_argv(self, runfile='', argv=[], expected=[]):
         # mock os.system
         output = []
         os.system = give_mocked_os_system(output)
 
         # call main func without arguments
-        main(argv=argv)
-
-        if base is not None:
-            os.chdir(oldcwd)
+        main(runfile=runfile, argv=argv)
 
         self.failUnlessEqual(expected, output)
 
@@ -68,7 +61,7 @@ class TestRun(TestCase):
             (DIR, CMD),
             (DIR, CMD),
         ]
-        self.fail_unless_equal_main_with_this_argv(argv, expected)
+        self.fail_unless_equal_main_with_this_argv(argv=argv, expected=expected)
 
     def test_run_with_some_command(self):
         c = 'command'
@@ -77,7 +70,7 @@ class TestRun(TestCase):
             (DIR, CMD),
             (DIR, c),
         ]
-        self.fail_unless_equal_main_with_this_argv(argv, expected)
+        self.fail_unless_equal_main_with_this_argv(argv=argv, expected=expected)
 
     def test_run_with_some_command_and_dirs(self):
         d = self.directory
@@ -91,7 +84,7 @@ class TestRun(TestCase):
             (path.join(d, 'c'), CMD),
             (path.join(d, 'c'), c),
         ]
-        self.fail_unless_equal_main_with_this_argv(argv, expected, base=self.directory)
+        self.fail_unless_equal_main_with_this_argv(argv=argv, expected=expected)
 
     def tearDown(self):
         # unmock os.system

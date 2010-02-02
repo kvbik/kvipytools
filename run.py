@@ -23,7 +23,7 @@ def parse_options(argv=[]):
         return (argv[0], D)
     return argv
 
-def import_config_file(runfile):
+def import_config_file(runfile=''):
     '''
     import python file with some config values
 
@@ -32,7 +32,7 @@ def import_config_file(runfile):
     '''
     dir = os.getcwd()
     runfile = path.join(dir, runfile)
-    if not path.exists(runfile):
+    if not path.isfile(runfile):
         return object()
 
 def eval_option(option, config):
@@ -67,7 +67,7 @@ def run(command, dirs):
         os.system(command)
         os.chdir(base)
 
-def main(runfile='', argv=None):
+def main(runfile='', argv=[]):
     options = parse_options(argv)
     config = import_config_file(runfile)
 
