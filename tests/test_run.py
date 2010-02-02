@@ -1,6 +1,6 @@
 
 import os
-from os.path import join
+from os import path
 from shutil import rmtree
 from unittest import TestCase
 from tempfile import mkdtemp
@@ -19,22 +19,72 @@ class TestRun(TestCase):
         # save os.system because of mocking
         self.os_system = os.system
 
-    def test_run_with_dummiest_values(self):
+        # create test dir structure
+        self.directory = mkdtemp(prefix='test_run_testrun_')
+
+        # store curr path
+        self.oldcwd = os.getcwd()
+
+        # make some subdirs
+        os.chdir(self.directory)
+        for d in ('a', 'b', 'c'):
+            os.makedirs(d)
+
+    def fail_unless_equal_main_with_this_argv(self, argv, expected, base=None):
+        oldcwd = os.getcwd()
+        if base is not None:
+            os.chdir(base)
+
         # mock os.system
         output = []
         os.system = give_mocked_os_system(output)
 
         # call main func without arguments
-        main([])
+        main(argv)
 
+        if base is not None:
+            os.chdir(oldcwd)
+
+        self.failUnlessEqual(expected, output)
+
+    def test_run_with_dummiest_values(self):
+        argv = []
         expected = [
             (DIR, CMD),
             (DIR, CMD),
         ]
+        self.fail_unless_equal_main_with_this_argv(argv, expected)
 
-        self.failUnlessEqual(expected, output)
+    def test_run_with_some_command(self):
+        c = 'command'
+        argv = [c]
+        expected = [
+            (DIR, CMD),
+            (DIR, c),
+        ]
+        self.fail_unless_equal_main_with_this_argv(argv, expected)
+
+    def test_run_with_some_command_and_dirs(self):
+        d = self.directory
+        c = 'command'
+        argv = [c, 'a', 'b', 'c']
+        expected = [
+            (path.join(d, 'a'), CMD),
+            (path.join(d, 'a'), c),
+            (path.join(d, 'b'), CMD),
+            (path.join(d, 'b'), c),
+            (path.join(d, 'c'), CMD),
+            (path.join(d, 'c'), c),
+        ]
+        self.fail_unless_equal_main_with_this_argv(argv, expected, base=self.directory)
 
     def tearDown(self):
         # unmock os.system
         os.system = self.os_system
+
+        # go back
+        os.chdir(self.oldcwd)
+
+        # dir cleanup
+        rmtree(self.directory)
 
