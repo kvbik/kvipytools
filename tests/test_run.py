@@ -5,8 +5,12 @@ from shutil import rmtree
 from unittest import TestCase
 from tempfile import mkdtemp
 
-from run import parse_options, import_config_file, eval_dirs, eval_command, run, main
-from run import CMD, DIR
+from run import (
+    CMD, parse_options,
+    import_config_file,
+    eval_dirs, eval_command,
+    run, main,
+)
 
 
 RUNCOMMAND = '''\
@@ -56,19 +60,21 @@ class TestRun(TestCase):
         self.failUnlessEqual(expected, output)
 
     def test_run_with_dummiest_values(self):
+        d = self.directory
         argv = []
         expected = [
-            (DIR, CMD),
-            (DIR, CMD),
+            (d, CMD),
+            (d, CMD),
         ]
         self.fail_unless_equal_main_with_this_argv(argv=argv, expected=expected)
 
     def test_run_with_some_command(self):
+        d = self.directory
         c = 'command'
         argv = [c]
         expected = [
-            (DIR, CMD),
-            (DIR, c),
+            (d, CMD),
+            (d, c),
         ]
         self.fail_unless_equal_main_with_this_argv(argv=argv, expected=expected)
 
