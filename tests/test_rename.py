@@ -75,7 +75,7 @@ class TestWithTmpDirCase(TestCase):
         self.options = (('x', 'y'), ('a a a', 'b b b'))
 
         self.oldcwd = os.getcwd()
-        self.directory = mkdtemp(prefix='test_util_parse_')
+        self.directory = mkdtemp(prefix='test_rename_tmp_dir_case_')
         os.chdir(self.directory)
 
         self.create_structure_from_variable(self.TEST_DIR_STRUCTURE)
