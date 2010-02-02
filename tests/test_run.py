@@ -27,7 +27,7 @@ def give_mocked_os_system(output):
         output.append((os.getcwd(), cmd,))
     return os_system
 
-class TestRun(TestCase):
+class TestRunCase(TestCase):
     def setUp(self):
         # save os.system because of mocking
         self.os_system = os.system
@@ -49,6 +49,32 @@ class TestRun(TestCase):
         f.write(RUNCOMMAND)
         f.close()
 
+    def tearDown(self):
+        # unmock os.system
+        os.system = self.os_system
+
+        # go back
+        os.chdir(self.oldcwd)
+
+        # dir cleanup
+        rmtree(self.directory)
+
+class TestRunInternals(TestRunCase):
+    def test_import_config_file(self):
+        m = import_config_file('runcommand.py')
+
+        self.failUnlessEqual(type(os), type(m))
+        self.failUnlessEqual('runcommand', m.__name__)
+        self.failUnlessEqual(path.join(self.directory, 'runcommand.py'), m.__file__)
+
+    def test_import_config_file_sys_path_is_same_on_the_end(self):
+        oldpath = sys.path[:]
+        m = import_config_file('runcommand.py')
+        newpath = sys.path[:]
+
+        self.failUnlessEqual(oldpath, newpath)
+
+class TestRunWholeCommand(TestRunCase):
     def fail_unless_equal_main_with_this_argv(self, runfile='', argv=[], expected=[]):
         # mock os.system
         output = []
@@ -91,28 +117,4 @@ class TestRun(TestCase):
             (path.join(d, 'c'), c),
         ]
         self.fail_unless_equal_main_with_this_argv(argv=argv, expected=expected)
-
-    def test_import_config_file(self):
-        m = import_config_file('runcommand.py')
-
-        self.failUnlessEqual(type(os), type(m))
-        self.failUnlessEqual('runcommand', m.__name__)
-        self.failUnlessEqual(path.join(self.directory, 'runcommand.py'), m.__file__)
-
-    def test_import_config_file_sys_path_is_same_on_the_end(self):
-        oldpath = sys.path[:]
-        m = import_config_file('runcommand.py')
-        newpath = sys.path[:]
-
-        self.failUnlessEqual(oldpath, newpath)
-
-    def tearDown(self):
-        # unmock os.system
-        os.system = self.os_system
-
-        # go back
-        os.chdir(self.oldcwd)
-
-        # dir cleanup
-        rmtree(self.directory)
 
