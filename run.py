@@ -24,13 +24,29 @@ def import_config_file(runfile=''):
     '''
     import python file with some config values
 
-    see:
-    /usr/lib/python2.6/site-packages/fabric/main.py:load_fabfile
+    slightly inspired by: fabric.main:load_fabfile
     '''
     dir = os.getcwd()
-    runfile = path.join(dir, runfile)
-    if not path.isfile(runfile):
-        return object()
+    apath = path.join(dir, runfile)
+
+    if not path.isfile(apath):
+        return
+
+    # get real path
+    apath = path.abspath(apath)
+    fpath = path.basename(apath)
+    dpath = path.dirname(apath)
+    # save old path
+    oldpath = sys.path[:]
+    # insert this dir to beginning of path
+    sys.path.insert(0, dpath)
+    # import it
+    m = None
+    if fpath[-3:] == '.py':
+        m = __import__(fpath[:-3], {}, {}, [])
+    # restore path
+    sys.path = oldpath
+    return m
 
 def eval_option(option, config):
     '''

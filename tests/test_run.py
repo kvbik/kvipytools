@@ -1,5 +1,5 @@
 
-import os
+import sys, os
 from os import path
 from shutil import rmtree
 from unittest import TestCase
@@ -91,6 +91,20 @@ class TestRun(TestCase):
             (path.join(d, 'c'), c),
         ]
         self.fail_unless_equal_main_with_this_argv(argv=argv, expected=expected)
+
+    def test_import_config_file(self):
+        m = import_config_file('runcommand.py')
+
+        self.failUnlessEqual(type(os), type(m))
+        self.failUnlessEqual('runcommand', m.__name__)
+        self.failUnlessEqual(path.join(self.directory, 'runcommand.py'), m.__file__)
+
+    def test_import_config_file_sys_path_is_same_on_the_end(self):
+        oldpath = sys.path[:]
+        m = import_config_file('runcommand.py')
+        newpath = sys.path[:]
+
+        self.failUnlessEqual(oldpath, newpath)
 
     def tearDown(self):
         # unmock os.system
