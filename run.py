@@ -3,11 +3,19 @@
 import sys, os
 
 
+CMD = '%s -c "import os; print os.getcwd()"' % sys.executable
+DIR = '_'
+
+
 def parse_options(argv=[]):
     '''
     parse options from sys.argv
     '''
-    pass
+    if not len(argv):
+        return (CMD, DIR)
+    elif len(argv) == 1:
+        return (argv[0], DIR)
+    return argv
 
 def import_config_file(file='runcommand.py'):
     '''
