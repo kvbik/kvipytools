@@ -66,13 +66,19 @@ def run(command, dirs):
         os.system(command)
         os.chdir(base)
 
+def main(argv=None):
+    if argv is None:
+        argv = sys.argv[1:]
 
-if __name__ == '__main__':
-    options = parse_options(sys.argv[1:])
+    options = parse_options(argv)
     config = import_config_file()
 
     dirs = eval_dirs(options, config)
     command = eval_command(options, config)
 
     run(command, dirs)
+
+
+if __name__ == '__main__':
+    main()
 

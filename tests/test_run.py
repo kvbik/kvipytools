@@ -5,7 +5,7 @@ from shutil import rmtree
 from unittest import TestCase
 from tempfile import mkdtemp
 
-from run import parse_options, import_config_file, eval_dirs, eval_command, run
+from run import parse_options, import_config_file, eval_dirs, eval_command, run, main
 from run import CMD, DIR
 
 
@@ -20,16 +20,12 @@ class TestRun(TestCase):
         self.os_system = os.system
 
     def test_run_with_dummiest_values(self):
-        options = parse_options([])
-        config = import_config_file()
-        dirs = eval_dirs(options, config)
-        command = eval_command(options, config)
-
         # mock os.system
         output = []
         os.system = give_mocked_os_system(output)
 
-        run(command, dirs)
+        # call main func without arguments
+        main([])
 
         expected = [
             (DIR, CMD),
