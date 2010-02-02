@@ -130,3 +130,25 @@ class TestRunWholeCommand(TestRunCase):
         ]
         self.fail_unless_equal_main_with_this_argv(argv=argv, expected=expected)
 
+    def test_run_with_dir_variable(self):
+        d = self.directory
+        c = "command from command"
+        argv = ['c', 'D']
+
+        da = path.join(d, 'a')
+        db = path.join(d, 'b')
+        dc = path.join(d, 'c')
+
+        runfilecontent = 'D = %s\nc = "%s"\n' % ((da, db, dc), c)
+        f = open(self.runfile, 'w')
+        f.write(runfilecontent)
+        f.close()
+
+        expected = [
+            (da, c),
+            (db, c),
+            (dc, c),
+        ]
+
+        self.fail_unless_equal_main_with_this_argv(argv=argv, expected=expected)
+
