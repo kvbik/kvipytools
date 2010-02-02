@@ -55,7 +55,7 @@ class TestRun(TestCase):
         os.system = give_mocked_os_system(output)
 
         # call main func without arguments
-        main(argv)
+        main(argv=argv)
 
         if base is not None:
             os.chdir(oldcwd)

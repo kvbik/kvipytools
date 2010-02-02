@@ -23,7 +23,7 @@ def parse_options(argv=[]):
         return (argv[0], D)
     return argv
 
-def import_config_file(runfile='runcommand.py'):
+def import_config_file(runfile):
     '''
     import python file with some config values
 
@@ -67,12 +67,9 @@ def run(command, dirs):
         os.system(command)
         os.chdir(base)
 
-def main(argv=None):
-    if argv is None:
-        argv = sys.argv[1:]
-
+def main(runfile='', argv=None):
     options = parse_options(argv)
-    config = import_config_file()
+    config = import_config_file(runfile)
 
     dirs = eval_dirs(options, config)
     command = eval_command(options, config)
@@ -81,5 +78,8 @@ def main(argv=None):
 
 
 if __name__ == '__main__':
-    main()
+    runfile = 'runcommand.py'
+    argv = sys.argv[1:]
+
+    main(runfile, argv)
 
