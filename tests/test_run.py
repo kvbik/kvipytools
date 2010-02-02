@@ -74,6 +74,18 @@ class TestRunInternals(TestRunCase):
 
         self.failUnlessEqual(oldpath, newpath)
 
+    def test_import_config_file_contains_correct_values(self):
+        m = import_config_file('runcommand.py')
+
+        DIRS = (
+            '/tmp/abraka',
+            '/tmp/brekeke',
+        )
+        command = 'pwd'
+
+        self.failUnlessEqual(DIRS, getattr(m, 'DIRS'))
+        self.failUnlessEqual(command, getattr(m, 'command'))
+
 class TestRunWholeCommand(TestRunCase):
     def fail_unless_equal_main_with_this_argv(self, runfile='', argv=[], expected=[]):
         # mock os.system
