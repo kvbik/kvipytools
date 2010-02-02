@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import sys, os
+from os import path
 
 
 C = 'cmd'
@@ -22,14 +23,16 @@ def parse_options(argv=[]):
         return (argv[0], D)
     return argv
 
-def import_config_file(file='runcommand.py'):
+def import_config_file(runfile='runcommand.py'):
     '''
     import python file with some config values
 
     see:
     /usr/lib/python2.6/site-packages/fabric/main.py:load_fabfile
     '''
-    return object()
+    runfile = path.join(DIR, runfile)
+    if not path.exists(runfile):
+        return object()
 
 def eval_option(option, config):
     '''
