@@ -6,9 +6,10 @@ from unittest import TestCase
 from tempfile import mkdtemp
 
 from run import (
-    CMD, parse_options,
+    CMD, C, D,
+    parse_options,
     import_config_file,
-    eval_dirs, eval_command,
+    eval_option, eval_dirs, eval_command,
     run, main,
 )
 
@@ -44,7 +45,9 @@ class TestRunCase(TestCase):
             os.makedirs(d)
 
         # create runcommand file
-        self.runfile = path.join(self.directory, 'runcommand.py')
+        self.configname = 'runcommand'
+        self.configfile = '%s.py' % self.configname
+        self.runfile = path.join(self.directory, self.configfile)
         f = open(self.runfile, 'w')
         f.write(RUNCOMMAND)
         f.close()
@@ -59,23 +62,27 @@ class TestRunCase(TestCase):
         # dir cleanup
         rmtree(self.directory)
 
+        # clear imported module
+        if sys.modules.has_key(self.configname):
+            del sys.modules[self.configname]
+
 class TestRunInternals(TestRunCase):
     def test_import_config_file(self):
-        m = import_config_file('runcommand.py')
+        m = import_config_file(self.configfile)
 
         self.failUnlessEqual(type(os), type(m))
-        self.failUnlessEqual('runcommand', m.__name__)
-        self.failUnlessEqual(path.join(self.directory, 'runcommand.py'), m.__file__)
+        self.failUnlessEqual(self.configname, m.__name__)
+        self.failUnlessEqual(path.join(self.directory, self.configfile), m.__file__)
 
     def test_import_config_file_sys_path_is_same_on_the_end(self):
         oldpath = sys.path[:]
-        m = import_config_file('runcommand.py')
+        m = import_config_file(self.configfile)
         newpath = sys.path[:]
 
         self.failUnlessEqual(oldpath, newpath)
 
     def test_import_config_file_contains_correct_values(self):
-        m = import_config_file('runcommand.py')
+        m = import_config_file(self.configfile)
 
         DIRS = (
             '/tmp/abraka',
@@ -85,6 +92,35 @@ class TestRunInternals(TestRunCase):
 
         self.failUnlessEqual(DIRS, getattr(m, 'DIRS'))
         self.failUnlessEqual(command, getattr(m, 'command'))
+
+    def test_eval_option(self):
+        class Config(object):
+            pass
+
+        config = Config()
+        option = 'a'
+        value  = 'A'
+
+        setattr(config, option, value)
+
+        o = eval_option(option, config)
+
+        self.failUnlessEqual(value, o)
+
+    def test_eval_dirs(self):
+        class Config(object):
+            pass
+        config = Config()
+
+        config.A = ('a', 'b')
+        config.B = ('e', 'f')
+
+        dirs = eval_dirs(['_', 'A', 'c', 'd', 'B'], config)
+        expected = ['a', 'b', 'c', 'd', 'e', 'f']
+
+        self.failUnlessEqual(expected, dirs)
+
+
 
 class TestRunWholeCommand(TestRunCase):
     def fail_unless_equal_main_with_this_argv(self, runfile='', argv=[], expected=[]):
@@ -145,10 +181,13 @@ class TestRunWholeCommand(TestRunCase):
         f.close()
 
         expected = [
+            (da, CMD),
             (da, c),
+            (db, CMD),
             (db, c),
+            (dc, CMD),
             (dc, c),
         ]
 
-        self.fail_unless_equal_main_with_this_argv(argv=argv, expected=expected)
+        self.fail_unless_equal_main_with_this_argv(runfile=self.runfile, argv=argv, expected=expected)
 

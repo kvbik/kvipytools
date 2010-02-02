@@ -64,7 +64,13 @@ def eval_dirs(options, config):
     evaluate dir variables into actual directories
     or return the same dir name
     '''
-    l = [ eval_option(o, config) for o in options[1:] ]
+    l = []
+    for o in options[1:]:
+        x = eval_option(o, config)
+        if hasattr(x, '__iter__'):
+            l.extend(x)
+        else:
+            l.append(x)
     return l
 
 def eval_command(options, config):
