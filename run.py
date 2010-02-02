@@ -30,7 +30,8 @@ def import_config_file(runfile='runcommand.py'):
     see:
     /usr/lib/python2.6/site-packages/fabric/main.py:load_fabfile
     '''
-    runfile = path.join(DIR, runfile)
+    dir = os.getcwd()
+    runfile = path.join(dir, runfile)
     if not path.exists(runfile):
         return object()
 

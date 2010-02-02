@@ -9,6 +9,15 @@ from run import parse_options, import_config_file, eval_dirs, eval_command, run,
 from run import CMD, DIR
 
 
+RUNCOMMAND = '''\
+DIRS = (
+    '/tmp/abraka',
+    '/tmp/brekeke',
+)
+command = 'pwd'
+'''
+
+
 def give_mocked_os_system(output):
     def os_system(cmd):
         output.append((os.getcwd(), cmd,))
@@ -29,6 +38,12 @@ class TestRun(TestCase):
         os.chdir(self.directory)
         for d in ('a', 'b', 'c'):
             os.makedirs(d)
+
+        # create runcommand file
+        self.runfile = path.join(self.directory, 'runcommand2.py')
+        f = open(self.runfile, 'w')
+        f.write(RUNCOMMAND)
+        f.close()
 
     def fail_unless_equal_main_with_this_argv(self, argv, expected, base=None):
         oldcwd = os.getcwd()
