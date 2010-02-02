@@ -3,8 +3,11 @@
 import sys, os
 
 
+C = 'cmd'
+D = 'ALL'
+
 CMD = '%s -c "import os; print os.getcwd()"' % sys.executable
-DIR = '_'
+DIR = os.getcwd()
 
 
 def parse_options(argv=[]):
@@ -12,23 +15,30 @@ def parse_options(argv=[]):
     parse options from sys.argv
     '''
     if not len(argv):
-        return (CMD, DIR)
+        return (C, D)
     elif len(argv) == 1:
-        return (argv[0], DIR)
+        return (argv[0], D)
     return argv
 
 def import_config_file(file='runcommand.py'):
     '''
     import python file with some config values
+
+    see:
+    /usr/lib/python2.6/site-packages/fabric/main.py:load_fabfile
     '''
-    pass
+    return object()
 
 def eval_option(option, config):
     '''
     evaluate one option from config file
     if it is not there, return what was given
     '''
-    pass
+    if option == 'cmd':
+        return CMD
+    if option == 'ALL':
+        return DIR
+    return option
 
 def eval_dirs(options, config):
     '''
@@ -51,7 +61,8 @@ def run(command, dirs):
     base = os.getcwd()
     for d in dirs:
         os.chdir(d)
-        print os.getcwd(), command
+        os.system(CMD)
+        os.system(command)
         os.chdir(base)
 
 
