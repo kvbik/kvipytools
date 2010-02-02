@@ -9,6 +9,8 @@ D = 'ALL'
 CMD = '%s -c "import os; print os.getcwd()"' % sys.executable
 DIR = os.getcwd()
 
+DEFAULTS = {C:CMD, D:DIR}
+
 
 def parse_options(argv=[]):
     '''
@@ -34,11 +36,7 @@ def eval_option(option, config):
     evaluate one option from config file
     if it is not there, return what was given
     '''
-    if option == 'cmd':
-        return CMD
-    if option == 'ALL':
-        return DIR
-    return option
+    return getattr(config, option, DEFAULTS.get(option, option))
 
 def eval_dirs(options, config):
     '''
