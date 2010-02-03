@@ -90,7 +90,10 @@ def run(command, dirs):
         os.system(command)
         os.chdir(base)
 
-def main(runfile='', argv=[]):
+def main(runfile='runcommand.py', argv=None):
+    if argv is None:
+        argv = sys.argv[1:]
+
     options = parse_options(argv)
     config = import_config_file(runfile)
 
@@ -101,8 +104,5 @@ def main(runfile='', argv=[]):
 
 
 if __name__ == '__main__':
-    runfile = 'runcommand.py'
-    argv = sys.argv[1:]
-
-    main(runfile, argv)
+    main()
 
