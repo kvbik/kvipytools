@@ -2,5 +2,5 @@
 some usefull scripts for various purpouses
 
   rename.py - do recursive rename of files, directories and all its content
-
+  run.py - run specified command in multiple directories
 

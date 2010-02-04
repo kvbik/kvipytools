@@ -1,6 +1,3 @@
 
  * remove shell calls from rename.py
 
- * do not use globals in run.py -> run() can be initialized from python
- 
-
