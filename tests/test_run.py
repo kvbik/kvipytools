@@ -120,8 +120,6 @@ class TestRunInternals(TestRunCase):
 
         self.failUnlessEqual(expected, dirs)
 
-
-
 class TestRunWholeCommand(TestRunCase):
     def fail_unless_equal_main_with_this_argv(self, runfile='', argv=[], expected=[]):
         # mock os.system

@@ -106,10 +106,15 @@ def change_content(options):
     """
     call_command('''grep -r -l -- '%(patrn)s' . | tr '\\n' '\\0' | xargs -0 sed -i "s/%(patrn)s/%(repl)s/g"''', options)
 
-
-if __name__ == '__main__':
+def main(argv=None):
+    if argv is None:
+        argv = sys.argv[1:]
     parse_options = OptionParser()
     options = parse_options(sys.argv[1:])
     rename_files_dirs(options)
     change_content(options)
+
+
+if __name__ == '__main__':
+    main()
 
