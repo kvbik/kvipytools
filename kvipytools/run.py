@@ -1,6 +1,7 @@
 
 import sys, os
 from os import path
+from subprocess import Popen, PIPE
 
 
 C = '_cmd'
@@ -78,8 +79,11 @@ def eval_command(options, config):
     '''
     return eval_option(options[0], config)
 
-def run_command(cmd):
-    os.system(cmd)
+def run_command(cmd, quiet=False):
+    p = Popen(cmd, stdout=PIPE, stderr=PIPE, shell=True)
+    stdoutdata, stderrdata = p.communicate()
+    if not quiet:
+        print stdoutdata.strip()
 
 def run(command, dirs, run_command=run_command, quiet=False):
     '''
@@ -88,9 +92,8 @@ def run(command, dirs, run_command=run_command, quiet=False):
     base = os.getcwd()
     for d in dirs:
         os.chdir(d)
-        if not quiet:
-            run_command(CMD)
-        run_command(command)
+        run_command(CMD, quiet=quiet)
+        run_command(command, quiet=quiet)
         os.chdir(base)
 
 def main(runfile='runcommand.py', argv=None, run_command=run_command, quiet=False):

@@ -24,7 +24,7 @@ command = 'pwd'
 
 
 def give_mocked_run_command(output):
-    def run_command(cmd):
+    def run_command(cmd, quiet):
         output.append((os.getcwd(), cmd,))
     return run_command
 
