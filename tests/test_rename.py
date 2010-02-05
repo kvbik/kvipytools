@@ -5,7 +5,9 @@ from shutil import rmtree
 from unittest import TestCase
 from tempfile import mkdtemp
 
-from rename import OptionParser, rename_files_dirs, change_content
+from kvipytools.rename import (
+    OptionParser, rename_files_dirs, change_content
+)
 
 
 class TestParse(TestCase):

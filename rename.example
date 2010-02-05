@@ -1,5 +1,5 @@
 
-~/bin/python-scripts/rename.sh \
+./scripts/rename.sh \
 	djangobaselibrary=yournewsupercoollibrary \
 	django-base-library=your-new-super-cool-library \
 	"Django Base Library=You New Super Cool Library"

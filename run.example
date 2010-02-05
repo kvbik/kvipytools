@@ -1,7 +1,7 @@
 
 you can either pass arguments directly::
 
-  ~/bin/python-scripts/run.py 'git checkout master' ./first-repo/ /tmp/second-repo/ ~/third-repo/
+  ./scripts/run.py 'git checkout master' ./first-repo/ /tmp/second-repo/ ~/third-repo/
 
 or define some replacements into runcommand.py,
 which will be evaluated. it is found in actual direcotry only.
@@ -21,7 +21,7 @@ which will be evaluated. it is found in actual direcotry only.
 
 and than call::
 
-  ~/bin/python-scripts/run.py my_command MY_DIRS
+  ./scripts/run.py my_command MY_DIRS
 
 you can define as many variables as you want,
 and there are two special names _cmd and _ALL,
@@ -45,7 +45,7 @@ which are found if no params are given
 
 if you now call::
 
-  ~/bin/python-scripts/run.py
+  ./scripts/run.py
 
 now all three script calls are equivalent
 

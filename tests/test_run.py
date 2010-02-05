@@ -5,7 +5,7 @@ from shutil import rmtree
 from unittest import TestCase
 from tempfile import mkdtemp
 
-from run import (
+from kvipytools.run import (
     CMD, C, D,
     parse_options,
     import_config_file,

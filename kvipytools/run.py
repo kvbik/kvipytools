@@ -1,4 +1,3 @@
-#!/usr/bin/env python
 
 import sys, os
 from os import path
