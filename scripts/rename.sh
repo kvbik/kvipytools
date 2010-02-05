@@ -11,7 +11,7 @@ D=$( mktemp -d )
 mv .git ${D}
 
 # do rename with all params
-${C}/rename.py "$@"
+${C}/rename "$@"
 
 # return .git dir here
 mv ${D}/.git .

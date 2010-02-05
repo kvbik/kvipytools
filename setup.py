@@ -1,14 +1,20 @@
 from setuptools import setup
 
 setup(
-    name='KviPyTools',
-    version='0.1.0',
+    name = 'KviPyTools',
+    description = "kvbik's python tools",
+    url = "http://github.com/kvbik/python-scripts",
+    version = '0.1.0',
+    author = "Jakub Vysoky",
+    author_email = "jakub@borka.cz",
+    license = "BSD",
     packages = ['kvipytools'],
-    scripts=['scripts/rename.sh'],
+    scripts = ['scripts/rename.sh'],
+    zip_safe = False,
     entry_points = {
         'console_scripts': [
-            'rename.py = kvipytools.rename:main',
-            'run.py = kvipytools.run:main',
+            'rename = kvipytools.rename:main',
+            'run = kvipytools.run:main',
         ],
     }
 )
