@@ -7,7 +7,7 @@ local shortcut only if library is not installed
 import sys
 from os import path
 
-p = path.abspath(path.join(path.dirname(__file__), path.pardir))
+p = path.abspath(path.join(sys.path[0], path.pardir))
 if p not in sys.path:
     sys.path.insert(0, p)
 
