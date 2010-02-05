@@ -23,10 +23,10 @@ command = 'pwd'
 '''
 
 
-def give_mocked_os_system(output):
-    def os_system(cmd):
+def give_mocked_run_command(output):
+    def run_command(cmd):
         output.append((os.getcwd(), cmd,))
-    return os_system
+    return run_command
 
 class TestRunCase(TestCase):
     def setUp(self):
@@ -122,12 +122,12 @@ class TestRunInternals(TestRunCase):
 
 class TestRunWholeCommand(TestRunCase):
     def fail_unless_equal_main_with_this_argv(self, runfile='', argv=[], expected=[]):
-        # mock os.system
+        # catch output
         output = []
-        os.system = give_mocked_os_system(output)
+        run_command = give_mocked_run_command(output)
 
         # call main func without arguments
-        main(runfile=runfile, argv=argv)
+        main(runfile=runfile, argv=argv, run_command=run_command)
 
         self.failUnlessEqual(expected, output)
 

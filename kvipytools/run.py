@@ -80,18 +80,21 @@ def eval_command(options, config):
     '''
     return eval_option(options[0], config)
 
-def run(command, dirs):
+def run_command(cmd):
+    os.system(cmd)
+
+def run(command, dirs, run_command=run_command):
     '''
     run specified command in given directories
     '''
     base = os.getcwd()
     for d in dirs:
         os.chdir(d)
-        os.system(CMD)
-        os.system(command)
+        run_command(CMD)
+        run_command(command)
         os.chdir(base)
 
-def main(runfile='runcommand.py', argv=None):
+def main(runfile='runcommand.py', argv=None, run_command=run_command):
     if argv is None:
         argv = sys.argv[1:]
 
@@ -101,7 +104,7 @@ def main(runfile='runcommand.py', argv=None):
     dirs = eval_dirs(options, config)
     command = eval_command(options, config)
 
-    run(command, dirs)
+    run(command, dirs, run_command)
 
 
 if __name__ == '__main__':
