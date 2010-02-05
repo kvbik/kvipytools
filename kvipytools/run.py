@@ -7,8 +7,6 @@ C = '_cmd'
 D = '_ALL'
 
 CMD = '"%s" -c "import os; print os.getcwd()"' % sys.executable
-if sys.platform == 'win32':
-    CMD = '"%s"' % CMD
 
 
 def parse_options(argv=[]):
@@ -83,18 +81,19 @@ def eval_command(options, config):
 def run_command(cmd):
     os.system(cmd)
 
-def run(command, dirs, run_command=run_command):
+def run(command, dirs, run_command=run_command, quiet=False):
     '''
     run specified command in given directories
     '''
     base = os.getcwd()
     for d in dirs:
         os.chdir(d)
-        run_command(CMD)
+        if not quiet:
+            run_command(CMD)
         run_command(command)
         os.chdir(base)
 
-def main(runfile='runcommand.py', argv=None, run_command=run_command):
+def main(runfile='runcommand.py', argv=None, run_command=run_command, quiet=False):
     if argv is None:
         argv = sys.argv[1:]
 
@@ -104,7 +103,7 @@ def main(runfile='runcommand.py', argv=None, run_command=run_command):
     dirs = eval_dirs(options, config)
     command = eval_command(options, config)
 
-    run(command, dirs, run_command)
+    run(command, dirs, run_command, quiet)
 
 
 if __name__ == '__main__':

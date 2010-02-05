@@ -189,3 +189,13 @@ class TestRunWholeCommand(TestRunCase):
 
         self.fail_unless_equal_main_with_this_argv(runfile=self.runfile, argv=argv, expected=expected)
 
+    def test_with_real_run_command(self):
+        cmd = '''"%s" -c "f = file('x', 'w'); f.write('xxx'); f.close();"''' % sys.executable
+        argv = [cmd, 'a', 'b', 'c']
+
+        main(argv=argv, quiet=True)
+
+        self.failUnlessEqual(['x'], os.listdir('./a/'))
+        self.failUnlessEqual(['x'], os.listdir('./b/'))
+        self.failUnlessEqual(['x'], os.listdir('./c/'))
+
