@@ -80,7 +80,8 @@ def eval_command(options, config):
     return eval_option(options[0], config)
 
 def run_command(cmd, quiet=False):
-    p = Popen(cmd, stdout=PIPE, stderr=PIPE, shell=True)
+    shell = sys.platform != 'win32'
+    p = Popen(cmd, stdout=PIPE, stderr=PIPE, shell=shell)
     stdoutdata, stderrdata = p.communicate()
     if not quiet:
         print stdoutdata.strip()
