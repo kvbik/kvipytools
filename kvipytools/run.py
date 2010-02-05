@@ -6,7 +6,9 @@ from os import path
 C = '_cmd'
 D = '_ALL'
 
-CMD = '%s -c "import os; print os.getcwd()"' % sys.executable
+CMD = '"%s" -c "import os; print os.getcwd()"' % sys.executable
+if sys.platform == 'win32':
+    CMD = '"%s"' % CMD
 
 
 def parse_options(argv=[]):
