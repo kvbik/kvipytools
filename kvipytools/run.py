@@ -85,7 +85,13 @@ def run_command(cmd, quiet=False):
     p = Popen(cmd, stdout=PIPE, stderr=PIPE, shell=shell)
     stdoutdata, stderrdata = p.communicate()
     if not quiet:
-        print stdoutdata.strip()
+        for o in stdoutdata.strip(), stderrdata.strip():
+            # print both stdoutdata and stderrdata, but if it contains data only
+            if o:
+                print o
+        if cmd != CMD:
+            # if i am not the defautl path command, print one more empty line
+            print
 
 def run(command, dirs, run_command=run_command, quiet=False):
     '''
