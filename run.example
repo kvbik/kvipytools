@@ -12,7 +12,7 @@ which will be evaluated. it is found in actual direcotry only.
   MY_DIRS = (
       './first-repo',
       '/tmp/second-repo',
-      os.path('~/third-repo/'),
+      os.path.expanduser('~/third-repo/'),
   )
 
   my_command = 'git checkout master'
