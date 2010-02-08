@@ -12,7 +12,7 @@ setup(
     author_email = "jakub@borka.cz",
     license = "BSD",
     packages = ['kvipytools'],
-    scripts = [join(base, 'scripts', 'rename.sh')],
+    scripts = [join(base, 'scripts', 'rename.sh')], # TODO: this is not enough.. setup.py must be called from its dir: python setup.py argv
     zip_safe = False,
     entry_points = {
         'console_scripts': [
