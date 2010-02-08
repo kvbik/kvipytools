@@ -1,4 +1,7 @@
 from setuptools import setup
+from os.path import join, dirname
+
+base = dirname(__file__)
 
 setup(
     name = 'KviPyTools',
@@ -9,7 +12,7 @@ setup(
     author_email = "jakub@borka.cz",
     license = "BSD",
     packages = ['kvipytools'],
-    scripts = ['scripts/rename.sh'],
+    scripts = [join(base, 'scripts', 'rename.sh')],
     zip_safe = False,
     entry_points = {
         'console_scripts': [
