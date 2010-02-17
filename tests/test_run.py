@@ -30,9 +30,6 @@ def give_mocked_run_command(output):
 
 class TestRunCase(TestCase):
     def setUp(self):
-        # save os.system because of mocking
-        self.os_system = os.system
-
         # store curr path
         self.oldcwd = os.getcwd()
 
@@ -53,9 +50,6 @@ class TestRunCase(TestCase):
         f.close()
 
     def tearDown(self):
-        # unmock os.system
-        os.system = self.os_system
-
         # go back
         os.chdir(self.oldcwd)
 
