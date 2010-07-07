@@ -92,6 +92,10 @@ def run_command(cmd, quiet=False, pipe_commands=True):
     p = Popen(cmd, shell=shell, **kwargs)
     stdoutdata, stderrdata = p.communicate()
     if not quiet:
+        if stdoutdata is None:
+            stdoutdata = ''
+        if stderrdata is None:
+            stderrdata = ''
         for o in stdoutdata.strip(), stderrdata.strip():
             # print both stdoutdata and stderrdata, but if it contains data only
             if o:
