@@ -80,9 +80,16 @@ def eval_command(options, config):
     '''
     return eval_option(options[0], config)
 
-def run_command(cmd, quiet=False):
+def run_command(cmd, quiet=False, pipe_commands=True):
     shell = sys.platform != 'win32'
-    p = Popen(cmd, stdout=PIPE, stderr=PIPE, shell=shell)
+    if pipe_commands:
+        kwargs = {
+            "stdout" : PIPE,
+            "stderr" : PIPE
+        }
+    else:
+        kwargs = {}
+    p = Popen(cmd, shell=shell, **kwargs)
     stdoutdata, stderrdata = p.communicate()
     if not quiet:
         for o in stdoutdata.strip(), stderrdata.strip():
@@ -93,18 +100,18 @@ def run_command(cmd, quiet=False):
             # if i am not the defautl path command, print one more empty line
             print
 
-def run(command, dirs, run_command=run_command, quiet=False):
+def run(command, dirs, run_command=run_command, quiet=False, pipe_commands=True):
     '''
     run specified command in given directories
     '''
     base = os.getcwd()
     for d in dirs:
         os.chdir(d)
-        run_command(CMD, quiet=quiet)
-        run_command(command, quiet=quiet)
+        run_command(CMD, quiet=quiet, pipe_commands=pipe_commands)
+        run_command(command, quiet=quiet, pipe_commands=pipe_commands)
         os.chdir(base)
 
-def main(runfile='runcommand.py', argv=None, run_command=run_command, quiet=False):
+def main(runfile='runcommand.py', argv=None, run_command=run_command, quiet=False, pipe_commands=True):
     if argv is None:
         argv = sys.argv[1:]
 
@@ -114,7 +121,7 @@ def main(runfile='runcommand.py', argv=None, run_command=run_command, quiet=Fals
     dirs = eval_dirs(options, config)
     command = eval_command(options, config)
 
-    run(command, dirs, run_command, quiet)
+    run(command, dirs, run_command, quiet, pipe_commands=pipe_commands)
 
 
 if __name__ == '__main__':
