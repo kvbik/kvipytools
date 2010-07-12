@@ -12,8 +12,8 @@ some usefull scripts for various purpouses
 rename
 ------
 
-call rename.sh wrapper for git repositories, it moves .git dir away,
-performs all renames, moves .git dir back and creates commit::
+call ``rename.sh`` wrapper for git repositories, it moves ``.git`` dir away,
+performs all renames, moves ``.git`` dir back and creates commit::
 
   ./scripts/rename.sh \
     djangobaselibrary=yournewsupercoollibrary \
@@ -29,8 +29,8 @@ you can either pass arguments directly::
 
   ./scripts/run 'git checkout master' ./first-repo/ /tmp/second-repo/ ~/third-repo/
 
-or define some replacements into runcommand.py,
-which will be evaluated. it is found in actual direcotry only::
+or define some replacements in ``runcommand.py``,
+which will be evaluated. it is found in actual directory::
 
   # beginnig of runcommand.py
   import os.path
@@ -45,13 +45,13 @@ which will be evaluated. it is found in actual direcotry only::
 
   # end of runcommand.py
 
-and than call::
+than call::
 
   ./scripts/run my_command MY_DIRS
 
 you can define as many variables as you want,
-and there are two special names _cmd and _ALL,
-which are found if no params are given::
+and there are two special names ``_cmd`` and ``_ALL``,
+which are taken if no params are given::
 
   # beginnig of runcommand.py
   import os.path
@@ -69,7 +69,7 @@ which are found if no params are given::
 
   # end of runcommand.py
 
-if you now call::
+so, if you now call::
 
   ./scripts/run
 
