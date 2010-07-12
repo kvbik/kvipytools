@@ -1,10 +1,13 @@
 
+run
+---
+
 you can either pass arguments directly::
 
   ./scripts/run 'git checkout master' ./first-repo/ /tmp/second-repo/ ~/third-repo/
 
 or define some replacements into runcommand.py,
-which will be evaluated. it is found in actual direcotry only.
+which will be evaluated. it is found in actual direcotry only::
 
   # beginnig of runcommand.py
   import os.path
@@ -25,7 +28,7 @@ and than call::
 
 you can define as many variables as you want,
 and there are two special names _cmd and _ALL,
-which are found if no params are given
+which are found if no params are given::
 
   # beginnig of runcommand.py
   import os.path

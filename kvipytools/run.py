@@ -26,6 +26,8 @@ def import_config_file(runfile=''):
     import python file with some config values
 
     slightly inspired by: fabric.main:load_fabfile
+
+    TODO: how about errors during import?
     '''
     dir = os.getcwd()
     apath = path.join(dir, runfile)

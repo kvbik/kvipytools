@@ -1,18 +1,27 @@
 from setuptools import setup
-from os.path import join, dirname
+from os import path
 
-base = dirname(__file__)
+
+VERSION = (0, 1, 3)
+__version__ = VERSION
+__versionstr__ = '.'.join(map(str, VERSION))
+
+f = open(path.join(path.dirname(__file__), 'README.rst'))
+long_description = f.read().strip()
+f.close()
+
 
 setup(
     name = 'KviPyTools',
     description = "kvbik's python tools",
-    url = "http://github.com/kvbik/python-scripts",
-    version = '0.1.0',
+    url = "http://github.com/kvbik/kvipytools",
+    long_description = long_description,
+    version = __versionstr__,
     author = "Jakub Vysoky",
     author_email = "jakub@borka.cz",
     license = "BSD",
     packages = ['kvipytools'],
-    scripts = [join(base, 'scripts', 'rename.sh')], # TODO: this is not enough.. setup.py must be called from its dir: python setup.py argv
+    scripts = ['scripts/rename.sh'],
     zip_safe = False,
     entry_points = {
         'console_scripts': [
