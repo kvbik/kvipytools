@@ -112,6 +112,8 @@ def run(command, dirs, run_command=run_command, quiet=False, pipe_commands=True)
     '''
     base = os.getcwd()
     for d in dirs:
+        if not os.path.isdir(d):
+            continue
         os.chdir(d)
         run_command(CMD, quiet=quiet, pipe_commands=pipe_commands)
         run_command(command, quiet=quiet, pipe_commands=pipe_commands)

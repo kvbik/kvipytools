@@ -193,3 +193,15 @@ class TestRunWholeCommand(TestRunCase):
         self.failUnlessEqual(['x'], os.listdir('./b/'))
         self.failUnlessEqual(['x'], os.listdir('./c/'))
 
+    def test_run_not_fail_on_unexting_dir(self):
+        d = self.directory
+        c = 'command'
+        argv = [c, 'a', 'd', 'c']
+        expected = [
+            (path.join(d, 'a'), CMD),
+            (path.join(d, 'a'), c),
+            (path.join(d, 'c'), CMD),
+            (path.join(d, 'c'), c),
+        ]
+        self.fail_unless_equal_main_with_this_argv(argv=argv, expected=expected)
+
